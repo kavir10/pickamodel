@@ -1,7 +1,8 @@
 import { refactorPr } from "./refactor-pr";
+import { toolLoopDebug } from "./tool-loop-debug";
 import type { Job } from "./types";
 
-export const jobs = [refactorPr] satisfies Job[];
+export const jobs = [refactorPr, toolLoopDebug] satisfies Job[];
 
 export function getJob(slug: string): Job | undefined {
   return jobs.find((job) => job.slug === slug);
