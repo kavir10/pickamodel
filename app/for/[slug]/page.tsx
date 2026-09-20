@@ -53,7 +53,7 @@ export default async function JobPage({ params }: JobPageProps) {
       )}
       <footer id="how-we-pick">
         <p>last updated <time dateTime={job.lastUpdated}>{job.lastUpdated}</time><span aria-hidden="true"> · </span><a href="#how-we-pick">how we pick</a></p>
-        <p className="fine-print">We compare models against the job’s context, reliability, speed, and cost. These are editorial starting points, not benchmarks or paid placements.</p>
+        <p className="fine-print">We’d pick based on the job’s context, judgment, speed, and cost. These are editorial starting points from agent coding work, not benchmarks or paid placements.</p>
       </footer>
     </main>
   );
