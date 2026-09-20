@@ -1,0 +1,33 @@
+:root { color-scheme: light; --ink: #181816; --muted: #69675f; --line: #d9d7cf; --paper: #f7f6f1; --accent: #315c45; }
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); font-family: Arial, Helvetica, sans-serif; line-height: 1.55; }
+a { color: var(--accent); text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+.shell { width: min(100% - 2rem, 68rem); margin-inline: auto; padding-block: 5rem; }
+.hub { max-width: 46rem; }
+.eyebrow { margin: 0 0 0.75rem; color: var(--accent); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+h1, h2 { letter-spacing: -0.035em; line-height: 1.1; }
+h1 { max-width: 18ch; margin: 0; font-size: clamp(2.5rem, 8vw, 5.5rem); font-weight: 650; }
+h2 { margin: 0 0 1rem; font-size: 1.4rem; }
+.lede { max-width: 42rem; margin: 1.5rem 0 0; color: var(--muted); font-size: clamp(1.05rem, 2.5vw, 1.35rem); }
+.job-list, .related-list { margin: 3.5rem 0 0; padding: 0; list-style: none; }
+.job-list li { border-top: 1px solid var(--line); }
+.job-list li:last-child { border-bottom: 1px solid var(--line); }
+.job-list a { display: block; padding: 1rem 0; font-size: 1.2rem; }
+.empty { margin-top: 3.5rem; color: var(--muted); }
+.back-link { display: inline-block; margin-bottom: 3rem; }
+.job-header { margin-bottom: 4rem; }
+.job-page section { margin-top: 3.5rem; }
+.table-wrap { overflow-x: auto; border-top: 2px solid var(--ink); }
+table { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
+th, td { min-width: 10rem; padding: 1rem 1rem 1rem 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+tbody th { min-width: 8rem; }
+.why-list { max-width: 46rem; margin: 0; padding-left: 1.25rem; }
+.why-list li + li, .related-list li + li { margin-top: 0.6rem; }
+.related-list { margin-top: 0; }
+footer { margin-top: 5rem; padding-top: 1.25rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+footer p { margin: 0; }
+.fine-print { max-width: 46rem; margin-top: 0.65rem; }
+@media (max-width: 42rem) { .shell { padding-block: 3rem; } .job-header { margin-bottom: 3rem; } }
