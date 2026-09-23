@@ -45,16 +45,20 @@ export function matches(model: Model, { pool, maxInputPrice, minContext, openWei
 
 /**
  * Rank the models that pass `constraints` for a job, using the first of the job's benchmarks that
- * scores at least two of them. Ranking within one benchmark keeps the comparison honest.
+ * scores at least two of them. Ranking within one benchmark keeps the comparison honest; independent
+ * results outrank vendor-reported ones when there are enough of them to compare.
  */
 export function rankModels(jobSlug: string, constraints: Constraints, limit = 3): { benchmark?: Benchmark; ranked: RankedModel[] } {
   const pickFrom = models.filter((model) => matches(model, constraints));
   const order = [...(jobBenchmarks[jobSlug] ?? defaultBenchmarks), ...benchmarks.map((b) => b.id)];
   const benchmarkId = order.find((id) => pickFrom.filter((model) => headlineScore(model.id, id)).length >= 2);
   const benchmark = benchmarks.find((b) => b.id === benchmarkId);
-  const ranked = pickFrom
-    .map((model) => ({ model, score: benchmarkId ? headlineScore(model.id, benchmarkId) : undefined }))
-    .sort((a, b) => (b.score?.value ?? -1) - (a.score?.value ?? -1) || b.model.released.localeCompare(a.model.released))
+  const scored = pickFrom.map((model) => ({ model, score: benchmarkId ? headlineScore(model.id, benchmarkId) : undefined }));
+  // Vendor self-runs use their own harness, so when two or more independent results exist they rank first.
+  const independentFirst = scored.filter(({ score }) => score?.reportedBy === "independent").length >= 2;
+  const tier = (score?: Score) => (!score ? 0 : independentFirst && score.reportedBy === "vendor" ? 1 : 2);
+  const ranked = scored
+    .sort((a, b) => tier(b.score) - tier(a.score) || (b.score?.value ?? -1) - (a.score?.value ?? -1) || b.model.released.localeCompare(a.model.released))
     .slice(0, limit);
   return { benchmark, ranked };
 }

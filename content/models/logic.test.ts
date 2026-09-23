@@ -46,8 +46,13 @@ test("job rankings use one benchmark and stay inside the pool", () => {
         else assert.equal(model.class, pool, model.id);
         if (score) assert.equal(score.benchmark, benchmark?.id);
       }
-      const values = ranked.map((r) => r.score?.value ?? -1);
-      values.slice(1).forEach((v, i) => assert.ok(values[i] >= v));
+      const independent = ranked.filter((r) => r.score?.reportedBy === "independent").length;
+      const key = (r: (typeof ranked)[number]) => [!r.score ? 0 : independent >= 2 && r.score.reportedBy === "vendor" ? 1 : 2, r.score?.value ?? -1];
+      ranked.slice(1).forEach((r, i) => {
+        const [ta, va] = key(ranked[i]);
+        const [tb, vb] = key(r);
+        assert.ok(ta > tb || (ta === tb && va >= vb), `${job.slug} / ${rec.model} order`);
+      });
     }
   }
 });
@@ -61,4 +66,11 @@ test("constraints filter the candidates before ranking", () => {
     assert.ok(model.contextWindow >= 500_000, model.id);
   }
   assert.equal(rankModels("refactor-pr", { maxInputPrice: 0.01 }).ranked.length, 0);
+});
+
+test("independent results outrank vendor self-runs on the same benchmark", () => {
+  const { ranked } = rankModels("tool-loop-debug", { pool: "frontier" }, 10);
+  const firstVendor = ranked.findIndex((r) => r.score?.reportedBy === "vendor");
+  const lastIndependent = ranked.map((r) => r.score?.reportedBy).lastIndexOf("independent");
+  assert.ok(firstVendor === -1 || firstVendor > lastIndependent);
 });
