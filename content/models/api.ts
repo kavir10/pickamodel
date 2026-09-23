@@ -121,6 +121,7 @@ export const apiIndex = {
     jobs: `${siteUrl}/api/jobs.json`,
     compare: `${siteUrl}/api/compare/{modelA}-vs-{modelB}[-vs-{modelC}[-vs-{modelD}]]`,
     recommend: `${siteUrl}/api/recommend?job={slug}&pool={frontier|fast|local}&maxInputPrice={usd}&minContext={tokens}&openWeightsOnly={true|false}&limit={1-10}`,
+    mcp: `${siteUrl}/mcp`,
     llmsTxt: `${siteUrl}/llms.txt`,
     llmsFullTxt: `${siteUrl}/llms-full.txt`,
   },
