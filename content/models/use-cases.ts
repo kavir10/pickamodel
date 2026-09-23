@@ -14,6 +14,9 @@ export const jobBenchmarks: Record<string, string[]> = {
   "ui-from-design": ["frontiercode-1-1", "deepswe", "terminal-bench-2-1"],
   "dependency-upgrade": ["swe-rebench", "frontiercode-1-1", "terminal-bench-4"],
   "codebase-onboarding": ["frontiercode-1-1", "swe-rebench", "deepswe"],
+  "long-running-task": ["terminal-bench-4", "deepswe", "frontiercode-1-1"],
+  "fix-ci": ["terminal-bench-2-1", "swe-rebench", "terminal-bench-4"],
+  "parallel-subagents": ["frontiercode-1-1", "deepswe", "terminal-bench-4"],
 };
 const defaultBenchmarks = ["frontiercode-1-1", "terminal-bench-4", "swe-rebench", "deepswe"];
 
