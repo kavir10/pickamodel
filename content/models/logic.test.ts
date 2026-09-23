@@ -4,7 +4,7 @@ import { refactorPr } from "../jobs/refactor-pr.ts";
 import { toolLoopDebug } from "../jobs/tool-loop-debug.ts";
 import { allPairs, canonicalCompareHref, compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
 import { getModel, headlineScore, leaderboard } from "./index.ts";
-import { poolFor, rankForJob, rankModels } from "./use-cases.ts";
+import { CLOSE_CALL, poolFor, rankForJob, rankModels, verdictsForComparison } from "./use-cases.ts";
 import { priceFrontier, valuePoints } from "./value.ts";
 
 test("headline score prefers independent results", () => {
@@ -94,4 +94,19 @@ test("price frontier keeps only points that beat every cheaper point", () => {
     const dominated = !frontier.includes(point);
     if (dominated) assert.ok(frontier.some((f) => f.cost <= point.cost && f.score.value >= point.score.value), point.model.id);
   }
+});
+
+test("comparison verdicts pick a winner per job on one benchmark and flag close calls", () => {
+  const compared = [getModel("claude-opus-5-5")!, getModel("gpt-6-astra")!];
+  const [refactor] = verdictsForComparison([refactorPr], compared);
+  assert.equal(refactor.benchmark?.id, "frontiercode-1-1");
+  assert.equal(refactor.winner?.model.id, "claude-opus-5-5"); // 54.64 vs 53.26, both independent
+  assert.equal(refactor.contenders.length, 2, `gap under ${CLOSE_CALL} points makes both contenders`);
+  assert.equal(refactor.cheaperPick?.model.id, "claude-opus-5-5"); // $60 vs $150 for the same workload
+  for (const { score } of refactor.ranked) assert.equal(score?.benchmark, "frontiercode-1-1");
+  const [tiedSamePrice] = verdictsForComparison([toolLoopDebug], [getModel("gpt-6-astra")!, getModel("claude-fable-5-1")!]);
+  assert.equal(tiedSamePrice.contenders.length, 2); // 58.18 vs 57.88 on Terminal-Bench 4.0
+  assert.equal(tiedSamePrice.cheaperPick, undefined, "equal prices don't break a tie");
+  const [loop] = verdictsForComparison([toolLoopDebug], [getModel("gpt-6-luna")!, getModel("gpt-oss-20b")!]);
+  assert.equal(loop.winner, undefined, "no shared benchmark means no winner");
 });
