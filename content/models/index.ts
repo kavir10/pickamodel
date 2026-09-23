@@ -50,6 +50,7 @@ export function formatTokens(tokens: number): string {
   return `${Math.round(tokens / 1000)}K`;
 }
 
+/** "$4", "$0.30", "$1.20": whole dollars stay bare, anything else gets cents. */
 export function formatPrice(usd: number): string {
-  return `$${usd < 1 ? usd.toFixed(2) : +usd.toFixed(2)}`;
+  return Number.isInteger(usd) ? `$${usd}` : `$${usd.toFixed(2)}`;
 }
