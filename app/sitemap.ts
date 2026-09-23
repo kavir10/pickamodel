@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
     ...jobs.map((job) => ({ url: `${baseUrl}/for/${job.slug}`, lastModified: job.lastUpdated, changeFrequency: "monthly" as const, priority: 0.8 })),
+    { url: `${baseUrl}/pick`, lastModified: dataAsOf, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/benchmarks`, lastModified: dataAsOf, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/compare`, lastModified: dataAsOf, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/agents`, lastModified: dataAsOf, changeFrequency: "monthly", priority: 0.5 },
