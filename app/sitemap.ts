@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { changes } from "@/content/changelog";
 import { jobs } from "@/content/jobs";
 import { dataAsOf, models } from "@/content/models";
 import { allPairs, canonicalCompareHref } from "@/content/models/compare";
@@ -9,6 +10,7 @@ const baseUrl = "https://pickamodel.dev";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: baseUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${baseUrl}/changelog`, lastModified: changes[0]?.date, changeFrequency: "weekly", priority: 0.5 },
     ...jobs.map((job) => ({ url: `${baseUrl}/for/${job.slug}`, lastModified: job.lastUpdated, changeFrequency: "monthly" as const, priority: 0.8 })),
     { url: `${baseUrl}/pick`, lastModified: dataAsOf, changeFrequency: "weekly", priority: 0.9 },
     { url: `${baseUrl}/benchmarks`, lastModified: dataAsOf, changeFrequency: "weekly", priority: 0.8 },
