@@ -9,6 +9,7 @@ import { reportHref } from "@/content/models/report";
 import { verdictsForComparison } from "@/content/models/use-cases";
 import { jobs } from "@/content/jobs";
 import { AddModel, HighlightBest, RemoveModel } from "../compare-controls";
+import { CostCalculator } from "../cost-calculator";
 import styles from "../compare.module.css";
 
 type ComparePageProps = { params: Promise<{ models: string }> };
@@ -177,6 +178,7 @@ export default async function ComparePage({ params }: ComparePageProps) {
           </table>
         </div>
       </section>
+      <CostCalculator models={models} />
       <HighlightBest>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
