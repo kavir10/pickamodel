@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -11,6 +11,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/", types: { "application/rss+xml": [{ url: "/feed.xml", title: "pickamodel.dev: what changed" }] } },
   openGraph: { type: "website", siteName: "pickamodel.dev", url: "/" },
   twitter: { card: "summary_large_image" },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f7f6f1" },
+    { media: "(prefers-color-scheme: dark)", color: "#141412" },
+  ],
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
