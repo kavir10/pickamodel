@@ -3,13 +3,16 @@ import { dependencyUpgrade } from "./dependency-upgrade";
 import { greenfieldScaffold } from "./greenfield-scaffold";
 import { localVsApi } from "./local-vs-api";
 import { prReview } from "./pr-review";
+import { fixCi } from "./fix-ci";
+import { longRunningTask } from "./long-running-task";
+import { parallelSubagents } from "./parallel-subagents";
 import { refactorPr } from "./refactor-pr";
 import { testGeneration } from "./test-generation";
 import { toolLoopDebug } from "./tool-loop-debug";
 import { uiFromDesign } from "./ui-from-design";
 import type { Job, Recommendation, Tier } from "./types";
 
-export const jobs = [greenfieldScaffold, localVsApi, prReview, refactorPr, testGeneration, toolLoopDebug, uiFromDesign, dependencyUpgrade, codebaseOnboarding] satisfies Job[];
+export const jobs = [greenfieldScaffold, localVsApi, prReview, refactorPr, testGeneration, toolLoopDebug, uiFromDesign, dependencyUpgrade, codebaseOnboarding, longRunningTask, fixCi, parallelSubagents] satisfies Job[];
 
 export function getJob(slug: string): Job | undefined {
   return jobs.find((job) => job.slug === slug);
