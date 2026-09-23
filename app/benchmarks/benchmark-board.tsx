@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { benchmarksByCoverage, leaderboard } from "@/content/models";
+import { benchmarksByCoverage, dataAsOf, leaderboard } from "@/content/models";
+import { reportHref } from "@/content/models/report";
 import styles from "./benchmarks.module.css";
 
 export function BenchmarkBoard() {
@@ -23,6 +24,7 @@ export function BenchmarkBoard() {
               <h2 id={`${benchmark.id}-heading`}><a href={benchmark.url}>{benchmark.name}</a></h2>
               <p>{benchmark.description}{benchmark.tasks ? ` ${benchmark.tasks.toLocaleString("en-US")} tasks.` : ""}</p>
               <p className={styles.caveat}>Caveat: {benchmark.caveat}</p>
+              <p className={styles.caveat}><a href={reportHref(benchmark.name, [`Benchmark: ${benchmark.name} (${benchmark.url})`, `Data checked: ${dataAsOf}`])}>report a wrong or missing score</a></p>
             </div>
             {rows.length === 0 ? (
               <p className={styles.empty}>No independent results yet.</p>
