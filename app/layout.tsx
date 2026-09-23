@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pickamodel.dev"),
   title: { default: "pickamodel.dev", template: "%s · pickamodel.dev" },
   description: "Pick the model for the coding job — not the hype thread.",
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", siteName: "pickamodel.dev", url: "/" },
+  twitter: { card: "summary_large_image" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
