@@ -7,18 +7,21 @@ export const greenfieldScaffold: Job = {
   recommendations: [
     {
       model: "Faster / cheaper cloud model",
+      tier: "fast",
       bestWhen: "The stack is familiar, the template is proven, and the scaffold is repetitive Haiku- or Flash-class work.",
       avoidWhen: "The project needs novel architecture decisions before the first files are created.",
       costVibe: "$",
     },
     {
       model: "Sonnet-class",
+      tier: "frontier",
       bestWhen: "The constraints are unusual, the layout spans multiple packages, or architectural taste matters.",
       avoidWhen: "The job is just making a standard Next app or other well-known boilerplate.",
       costVibe: "$$$",
     },
     {
       model: "Local coding model",
+      tier: "local",
       bestWhen: "The greenfield work must stay offline or private and your template library is already strong.",
       avoidWhen: "The model struggles to follow instructions across a long scaffold or many generated files.",
       costVibe: "~free",

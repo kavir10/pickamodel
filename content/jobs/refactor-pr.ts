@@ -7,18 +7,21 @@ export const refactorPr: Job = {
   recommendations: [
     {
       model: "Sonnet-class",
+      tier: "frontier",
       bestWhen: "The refactor crosses modules and the agent needs to preserve behavior, conventions, and test intent.",
       avoidWhen: "The change is mechanical, tightly scoped, or easy to verify in one pass.",
       costVibe: "worth it for the main pass",
     },
     {
       model: "Faster / cheaper cloud model",
+      tier: "fast",
       bestWhen: "You have a precise plan and want quick, reviewable edits or follow-up fixes.",
       avoidWhen: "The agent must discover the architecture or make judgment calls across a large diff.",
       costVibe: "cheap per turn; retries add up",
     },
     {
       model: "Local coding model",
+      tier: "local",
       bestWhen: "Code cannot leave your machine and you can supply narrow tasks, tools, and strong tests.",
       avoidWhen: "The refactor needs a long context window or reliable decisions across many files.",
       costVibe: "no API bill; hardware and time count",
