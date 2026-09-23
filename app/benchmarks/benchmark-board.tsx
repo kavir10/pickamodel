@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { benchmarksByCoverage, leaderboard } from "@/content/models";
 import styles from "./benchmarks.module.css";
@@ -29,7 +30,7 @@ export function BenchmarkBoard() {
               <ol className={styles.rows}>
                 {rows.map(({ model, score }) => (
                   <li key={model.id} className={styles.row}>
-                    <span className={styles.name}>{model.name}<span className={styles.provider}>{model.provider}</span></span>
+                    <span className={styles.name}><Link href={`/models/${model.id}`}>{model.name}</Link><span className={styles.provider}>{model.provider}</span></span>
                     <span className={styles.track} aria-hidden="true"><span className={styles.bar} data-reported={score.reportedBy} style={{ width: `${score.value}%` }} /></span>
                     <span className={styles.value}>{score.value.toFixed(1)}%</span>
                     <span className={styles.badge} data-reported={score.reportedBy}>{score.reportedBy}</span>
