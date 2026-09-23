@@ -6,6 +6,7 @@ import { allPairs, canonicalCompareHref, compareHref, parseCompareSlug, workload
 import { getModel, headlineScore, leaderboard } from "./index.ts";
 import { CLOSE_CALL, poolFor, rankForJob, rankModels, verdictsForComparison } from "./use-cases.ts";
 import { priceFrontier, valuePoints } from "./value.ts";
+import { readQuestion } from "./ask.ts";
 
 test("headline score prefers independent results", () => {
   const score = headlineScore("claude-fable-5-1", "terminal-bench-4");
@@ -109,4 +110,28 @@ test("comparison verdicts pick a winner per job on one benchmark and flag close 
   assert.equal(tiedSamePrice.cheaperPick, undefined, "equal prices don't break a tie");
   const [loop] = verdictsForComparison([toolLoopDebug], [getModel("gpt-6-luna")!, getModel("gpt-oss-20b")!]);
   assert.equal(loop.winner, undefined, "no shared benchmark means no winner");
+});
+
+test("plain-language questions map to a job and constraints", () => {
+  const all = ["fix-ci", "tool-loop-debug", "parallel-subagents", "long-running-task", "dependency-upgrade", "codebase-onboarding", "ui-from-design", "pr-review", "refactor-pr", "test-generation", "greenfield-scaffold", "local-vs-api"];
+  const cases: [string, Partial<ReturnType<typeof readQuestion>>][] = [
+    ["cheapest model to fix a failing CI build that runs locally", { job: "fix-ci", pool: "local" }],
+    ["best model for a big multi-file refactor", { job: "refactor-pr", pool: undefined }],
+    ["best open weights model for debugging a tool loop under $2", { job: "tool-loop-debug", pool: undefined, openWeightsOnly: true, maxInputPrice: 2 }],
+    ["my agent keeps calling the same tool over and over", { job: "tool-loop-debug" }],
+    ["write unit tests for legacy code, under $1 per million", { job: "test-generation", maxInputPrice: 1 }],
+    ["open source model for building UI from a Figma mockup", { job: "ui-from-design", openWeightsOnly: true }],
+    ["which model can read our whole codebase, 1M context", { job: "codebase-onboarding", minContext: 1_000_000 }],
+    ["upgrade from Next 15 to 16 with breaking changes", { job: "dependency-upgrade" }],
+    ["run subagents in parallel without a huge bill", { job: "parallel-subagents" }],
+    ["leave an agent running overnight on a migration", { job: "long-running-task" }],
+    ["scaffold a new service quickly", { job: "greenfield-scaffold", pool: "fast" }],
+    ["failing tests in ci", { job: "fix-ci" }],
+  ];
+  for (const [question, expected] of cases) {
+    const reading = readQuestion(question, all);
+    for (const [key, value] of Object.entries(expected)) assert.deepEqual(reading[key as keyof typeof reading], value, `${question} → ${key}`);
+  }
+  assert.equal(readQuestion("fix ci", ["refactor-pr"]).job, undefined, "only jobs the site has");
+  assert.equal(readQuestion("hello there", all).job, undefined, "no guess when nothing matches");
 });

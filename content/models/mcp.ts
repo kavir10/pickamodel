@@ -1,4 +1,4 @@
-import { benchmarkData, compareData, jobData, modelData, recommendData, siteUrl } from "./api.ts";
+import { askData, benchmarkData, compareData, jobData, modelData, recommendData, siteUrl } from "./api.ts";
 import { compareSlug, MAX_COMPARE } from "./compare.ts";
 import { benchmarks, dataAsOf, getModel, models } from "./index.ts";
 import { getJob, jobs } from "../jobs";
@@ -18,6 +18,13 @@ const jobSlugs = () => jobs.map((job) => job.slug);
 const modelIds = () => models.map((model) => model.id);
 
 export const tools = [
+  {
+    name: "ask",
+    title: "Ask which model to use, in plain words",
+    description:
+      "Answer a plain-language question like 'cheapest model to fix a failing CI build that runs locally'. Returns how the question was read (job and constraints) and the ranked recommendation. Use recommend_model instead when you already know the job slug.",
+    inputSchema: { type: "object", properties: { question: { type: "string", maxLength: 500 } }, required: ["question"] },
+  },
   {
     name: "recommend_model",
     title: "Recommend a model for a coding job",
@@ -78,6 +85,11 @@ function callTool(name: string, args: Record<string, unknown>): unknown {
   const str = (key: string) => (typeof args[key] === "string" ? (args[key] as string) : undefined);
   const num = (key: string) => (typeof args[key] === "number" ? (args[key] as number) : undefined);
   switch (name) {
+    case "ask": {
+      const question = str("question")?.trim();
+      if (!question) throw new ToolInputError('"question" is required.');
+      return askData(question.slice(0, 500));
+    }
     case "recommend_model": {
       const job = str("job");
       if (!job) throw new ToolInputError(`"job" is required. One of: ${jobSlugs().join(", ")}.`);
@@ -137,7 +149,7 @@ export function handleMessage(message: JsonRpcRequest): JsonRpcResponse | null {
         capabilities: { tools: { listChanged: false } },
         serverInfo,
         instructions:
-          "Use recommend_model to answer 'which model for this coding job?'. Scores from different benchmarks are not comparable; prefer independent over vendor-reported results and cite the source URL.",
+          "Use ask for plain-language questions, or recommend_model when you know the job slug, to answer 'which model for this coding job?'. Scores from different benchmarks are not comparable; prefer independent over vendor-reported results and cite the source URL.",
       });
     }
     case "ping":
