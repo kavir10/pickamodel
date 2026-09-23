@@ -15,7 +15,14 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: JobPageProps): Promise<Metadata> {
   const job = getJob((await params).slug);
-  return job ? { title: job.title, description: job.oneLiner } : { title: "page not found" };
+  if (!job) return { title: "page not found" };
+  const url = `/for/${job.slug}`;
+  return {
+    title: job.title,
+    description: job.oneLiner,
+    alternates: { canonical: url },
+    openGraph: { type: "article", siteName: "pickamodel.dev", url, title: job.title, description: job.oneLiner, modifiedTime: job.lastUpdated },
+  };
 }
 
 export default async function JobPage({ params }: JobPageProps) {
@@ -23,9 +30,19 @@ export default async function JobPage({ params }: JobPageProps) {
   if (!job) notFound();
   const relatedJobs = getRelatedJobs(job);
   const rankings = job.recommendations.map((rec) => ({ rec, ...rankForJob(job, rec) }));
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: job.title,
+    description: job.oneLiner,
+    dateModified: job.lastUpdated,
+    url: `https://pickamodel.dev/for/${job.slug}`,
+    publisher: { "@type": "Organization", name: "pickamodel.dev", url: "https://pickamodel.dev" },
+  };
 
   return (
     <main className="shell job-page">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <Link className="back-link" href="/">← all jobs</Link>
       <header className="job-header">
         <h1>{job.title}</h1>
