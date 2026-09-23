@@ -4,7 +4,7 @@ import { refactorPr } from "../jobs/refactor-pr.ts";
 import { toolLoopDebug } from "../jobs/tool-loop-debug.ts";
 import { compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
 import { getModel, headlineScore, leaderboard } from "./index.ts";
-import { poolFor, rankForJob } from "./use-cases.ts";
+import { poolFor, rankForJob, rankModels } from "./use-cases.ts";
 
 test("headline score prefers independent results", () => {
   const score = headlineScore("claude-fable-5-1", "terminal-bench-4");
@@ -50,4 +50,15 @@ test("job rankings use one benchmark and stay inside the pool", () => {
       values.slice(1).forEach((v, i) => assert.ok(values[i] >= v));
     }
   }
+});
+
+test("constraints filter the candidates before ranking", () => {
+  const { ranked } = rankModels("tool-loop-debug", { openWeightsOnly: true, maxInputPrice: 2, minContext: 500_000 }, 10);
+  assert.ok(ranked.length > 0);
+  for (const { model } of ranked) {
+    assert.ok(model.openWeight, model.id);
+    assert.ok(model.price && model.price.input <= 2, model.id);
+    assert.ok(model.contextWindow >= 500_000, model.id);
+  }
+  assert.equal(rankModels("refactor-pr", { maxInputPrice: 0.01 }).ranked.length, 0);
 });
