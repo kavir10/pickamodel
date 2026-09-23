@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { dataAsOf } from "@/content/models";
 import { BenchmarkBoard } from "./benchmark-board";
+import { PriceScoreChart } from "./price-score-chart";
 
 export const metadata: Metadata = {
   title: "coding benchmarks",
@@ -17,6 +18,11 @@ export default function BenchmarksPage() {
         <h1>coding benchmarks</h1>
         <p className="lede">Every published score we could source for current models, with a link to where it came from. Harnesses and effort levels differ, so compare models within a benchmark, not across benchmarks.</p>
       </header>
+      <section className="value-section" aria-labelledby="value-heading">
+        <h2 id="value-heading">score for the money</h2>
+        <PriceScoreChart />
+      </section>
+      <h2 className="value-section">every benchmark</h2>
       <BenchmarkBoard />
       <footer>
         <p>data checked <time dateTime={dataAsOf}>{dataAsOf}</time></p>
