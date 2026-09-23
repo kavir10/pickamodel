@@ -17,6 +17,8 @@ export type Model = {
   price: { input: number; output: number; cachedInput?: number } | null;
   openWeight: boolean;
   license: string | null;
+  /** Small enough to run on one developer machine or a single GPU. */
+  runsLocally?: boolean;
   /** One line on pricing or limit quirks worth knowing (long-context surcharges, peak pricing). */
   note?: string;
   sources: Source[];

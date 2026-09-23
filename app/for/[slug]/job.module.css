@@ -1,0 +1,15 @@
+.intro { max-width: 46rem; margin: -0.25rem 0 1.25rem; color: var(--muted); font-size: 0.92rem; }
+.pools { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+.pool { padding: 1rem 1.1rem 1.1rem; border: 1px solid var(--line); border-radius: 10px; }
+.pool h3 { margin: 0; font-size: 1rem; }
+.rankedBy { margin: 0.2rem 0 0.75rem; color: var(--muted); font-size: 0.8rem; }
+.models { display: grid; gap: 0.7rem; margin: 0; padding-left: 1.1rem; }
+.models li::marker { color: var(--muted); font-size: 0.85rem; }
+.modelName { font-weight: 650; }
+.meta { display: block; color: var(--muted); font-size: 0.8rem; }
+.score { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.2rem; font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+.track { flex: 1; max-width: 9rem; height: 0.4rem; background: var(--line); }
+.bar { display: block; height: 100%; background: var(--accent); }
+.bar[data-reported="vendor"] { background: repeating-linear-gradient(135deg, var(--accent) 0 4px, color-mix(in srgb, var(--accent) 55%, var(--paper)) 4px 7px); }
+.compare { display: inline-block; margin-top: 0.9rem; font-size: 0.88rem; }
+.asOf { margin-top: 0.9rem; color: var(--muted); font-size: 0.8rem; }
