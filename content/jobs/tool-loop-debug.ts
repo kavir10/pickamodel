@@ -7,18 +7,21 @@ export const toolLoopDebug: Job = {
   recommendations: [
     {
       model: "Sonnet-class",
+      tier: "frontier",
       bestWhen: "The debug session has many steps and the agent needs the judgment to stop, reassess, and replan.",
       avoidWhen: "You are running a pure speed race with a known fix and clear verification.",
       costVibe: "$$$",
     },
     {
       model: "Faster / cheaper cloud model",
+      tier: "fast",
       bestWhen: "You understand the failure already and can keep each tool loop tight, explicit, and easy to verify.",
       avoidWhen: "The failure is novel, the errors are ambiguous, or the next useful tool call is unclear.",
       costVibe: "$",
     },
     {
       model: "Local coding model",
+      tier: "local",
       bestWhen: "Traces must stay offline or private and your harness gives the model firm boundaries.",
       avoidWhen: "The model has weak tool-use discipline or the harness does not enforce stop conditions.",
       costVibe: "~free",
