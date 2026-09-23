@@ -35,3 +35,17 @@ export function workloadCost(model: Model, inputTokens = 10_000_000, outputToken
   if (!model.price) return null;
   return (model.price.input * inputTokens + model.price.output * outputTokens) / 1_000_000;
 }
+
+export type Usage = { inputMillions: number; outputMillions: number; cachedShare: number };
+
+/**
+ * Monthly list-price cost for a usage profile. The cached share of input is billed at the cached-input
+ * price when the vendor publishes one, otherwise at the normal input price. Long-context surcharges and
+ * batch discounts are ignored; model notes call those out.
+ */
+export function usageCost(model: Model, { inputMillions, outputMillions, cachedShare }: Usage): number | null {
+  if (!model.price) return null;
+  const share = Math.min(Math.max(cachedShare, 0), 1);
+  const cachedRate = model.price.cachedInput ?? model.price.input;
+  return inputMillions * ((1 - share) * model.price.input + share * cachedRate) + outputMillions * model.price.output;
+}
