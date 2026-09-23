@@ -3,7 +3,7 @@ import type { Job } from "../jobs/types";
 import { compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
 import { benchmarks, dataAsOf, headlineScore, leaderboard, models, scores } from "./index.ts";
 import type { Model } from "./types";
-import { poolFor, rankForJob, rankModels, type Constraints, type Pool } from "./use-cases.ts";
+import { poolFor, rankForJob, rankModels, verdictsForComparison, type Constraints, type Pool } from "./use-cases.ts";
 
 /** Shapes shared by the JSON API, llms-full.txt, and the MCP server. Plain data, absolute URLs. */
 
@@ -77,6 +77,14 @@ export function compareData(slug: string) {
     benchmarks: benchmarks
       .map((benchmark) => ({ id: benchmark.id, name: benchmark.name, values: picked.map((model) => headlineScore(model.id, benchmark.id)?.value ?? null) }))
       .filter((row) => row.values.some((value) => value !== null)),
+    byJob: verdictsForComparison(jobs, picked).map(({ job, benchmark, ranked, winner, contenders, cheaperPick, vendorOnly }) => ({
+      job: job.slug,
+      pick: cheaperPick?.model.id ?? (contenders.length > 1 ? null : winner?.model.id ?? null),
+      verdict: !winner ? "no shared score" : cheaperPick ? "tied on score; cheapest of the tied models" : contenders.length > 1 ? "too close to call" : vendorOnly ? "vendor-reported lead" : "clear lead",
+      tiedWith: contenders.length > 1 ? contenders.map((r) => r.model.id) : [],
+      benchmark: benchmark?.id ?? null,
+      scores: ranked.filter((r) => r.score).map((r) => ({ model: r.model.id, value: r.score!.value, reportedBy: r.score!.reportedBy })),
+    })),
   };
 }
 
