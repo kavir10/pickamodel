@@ -7,18 +7,21 @@ export const localVsApi: Job = {
   recommendations: [
     {
       model: "Local mid/strong (qwen/llama/deepseek-class)",
+      tier: "local",
       bestWhen: "The code is private, the work must stay offline or air-gapped, and predictable unit cost matters.",
       avoidWhen: "The job needs huge multi-file context or your local tool harness is weak.",
       costVibe: "~free–$$ (gpu)",
     },
     {
       model: "API Sonnet-class",
+      tier: "frontier",
       bestWhen: "The repo is messy, the context is long, or the agent needs a tool-heavy loop.",
       avoidWhen: "The work has pure privacy requirements.",
       costVibe: "$$$",
     },
     {
       model: "API fast/cheap",
+      tier: "fast",
       bestWhen: "You’re running high-volume, simple jobs from the cloud.",
       avoidWhen: "The mandate is “just make it local.”",
       costVibe: "$",

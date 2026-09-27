@@ -7,18 +7,21 @@ export const testGeneration: Job = {
   recommendations: [
     {
       model: "Sonnet-class",
+      tier: "frontier",
       bestWhen: "The code has tricky edge cases, asynchronous behavior, or a history of flaky failures.",
       avoidWhen: "You need to generate 200 trivial tests and volume matters more than judgment.",
       costVibe: "$$$",
     },
     {
       model: "Faster / cheaper cloud model",
+      tier: "fast",
       bestWhen: "You need boilerplate unit tests and straightforward happy-path coverage.",
       avoidWhen: "The behavior depends on subtle concurrency, timing, or hard-to-reproduce flakes.",
       costVibe: "$",
     },
     {
       model: "Local mid",
+      tier: "local",
       bestWhen: "The repository must stay private or you are experimenting with test generation in offline CI.",
       avoidWhen: "You need realistic failure cases rather than plausible-looking assertions around the happy path.",
       costVibe: "~free",

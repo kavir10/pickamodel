@@ -1,0 +1,19 @@
+.finder { margin-top: 3.5rem; }
+.heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.modes { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.5rem; padding: 0; border: 0; }
+.modes legend { width: 100%; margin-bottom: 0.6rem; padding: 0; color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.mode input { position: absolute; opacity: 0; pointer-events: none; }
+.mode span { display: inline-block; padding: 0.45rem 0.9rem; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-size: 0.92rem; }
+.mode span:hover { border-color: var(--ink); }
+.mode input:checked + span { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.mode input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cards { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.cards li { border-bottom: 1px solid var(--line); }
+.card { display: grid; gap: 0.35rem; padding: 1.25rem 0; color: inherit; text-decoration: none; }
+.title { color: var(--accent); font-size: 1.25rem; font-weight: 650; text-decoration: underline; text-underline-offset: 0.2em; }
+.card:hover .title { text-decoration-thickness: 2px; }
+.oneLiner { color: var(--muted); }
+.pick { margin-top: 0.35rem; font-size: 0.94rem; }
+.pickLabel { margin-right: 0.35rem; color: var(--muted); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.cost { margin-left: 0.35rem; color: var(--muted); }
+.when { display: block; color: var(--muted); }
