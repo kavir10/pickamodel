@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { jobs } from "@/content/jobs";
 
-const baseUrl = "https://pickamodel.dev";
+const baseUrl = "https://www.pickamodel.dev";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
