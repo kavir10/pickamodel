@@ -27,6 +27,7 @@ ${presets.map((preset) => `- [${preset.title}](${siteUrl}${compareHref(preset.mo
 
 ## Machine-readable
 
+- [MCP server](${siteUrl}/mcp): Streamable HTTP, no auth. Tools: recommend_model, compare_models, get_model, get_job, list_jobs, benchmark_leaderboard
 - [API index](${siteUrl}/api): lists every endpoint
 - [Models JSON](${siteUrl}/api/models.json): prices, limits, licenses, every score with source
 - [Jobs JSON](${siteUrl}/api/jobs.json): each job's recommendations and the current models behind them
