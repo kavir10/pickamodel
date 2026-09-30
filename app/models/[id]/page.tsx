@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { benchmarks, dataAsOf, formatPrice, formatTokens, getModel, models, scores } from "@/content/models";
+import { jobs } from "@/content/jobs";
 import { compareHref } from "@/content/models/compare";
+import { jobsForModel } from "@/content/models/use-cases";
 import styles from "../models.module.css";
 
 type ModelPageProps = { params: Promise<{ id: string }> };
@@ -28,6 +30,7 @@ export default async function ModelPage({ params }: ModelPageProps) {
   const modelScores = benchmarks
     .map((benchmark) => ({ benchmark, rows: scores.filter((s) => s.model === model.id && s.benchmark === benchmark.id) }))
     .filter(({ rows }) => rows.length > 0);
+  const goodFor = jobsForModel(model.id, jobs);
   const peers = models.filter((other) => other.id !== model.id && other.class === model.class).slice(0, 3);
 
   const facts: [string, React.ReactNode][] = [
@@ -58,6 +61,18 @@ export default async function ModelPage({ params }: ModelPageProps) {
           ))}
         </dl>
         <p className={styles.sources}>Sources: {model.sources.map((source, index) => <span key={source.url}>{index > 0 && ", "}<a href={source.url}>{source.label}</a></span>)}</p>
+      </section>
+      <section aria-labelledby="jobs-heading">
+        <h2 id="jobs-heading">a top pick for</h2>
+        {goodFor.length === 0 ? (
+          <p className={styles.sources}>Not in the top three for any job yet, usually because it lacks scores on the benchmarks those jobs rank by.</p>
+        ) : (
+          <ul className="related-list">
+            {goodFor.map(({ job, rec }) => (
+              <li key={`${job.slug}-${rec.model}`}><Link href={`/for/${job.slug}`}>{job.title}</Link> <span className={styles.sources}>as the “{rec.model}” option</span></li>
+            ))}
+          </ul>
+        )}
       </section>
       <section aria-labelledby="scores-heading">
         <h2 id="scores-heading">benchmark scores</h2>

@@ -1,4 +1,4 @@
-import { getModel } from "./index";
+import { getModel } from "./index.ts";
 import type { Model } from "./types";
 
 export const MAX_COMPARE = 4;
