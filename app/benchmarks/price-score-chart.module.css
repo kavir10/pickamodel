@@ -1,0 +1,23 @@
+.figure { margin: 0 0 1rem; }
+.head { display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; align-items: end; justify-content: space-between; margin-bottom: 0.75rem; }
+.select { display: grid; gap: 0.35rem; }
+.select span { color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.select select { padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; }
+.key { display: flex; flex-wrap: wrap; gap: 1rem; margin: 0; color: var(--muted); font-size: 0.82rem; }
+.key span { display: inline-flex; gap: 0.35rem; align-items: center; }
+.plot { position: relative; }
+.plot svg { display: block; overflow: visible; }
+.grid { stroke: var(--line); stroke-width: 1; }
+.tick { fill: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.axisLabel { fill: var(--muted); font-size: 12px; }
+.label { fill: var(--ink); font-size: 13px; font-weight: 600; paint-order: stroke; stroke: var(--paper); stroke-width: 4px; stroke-linejoin: round; }
+.frontier { fill: none; stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.dotFilled { fill: var(--chart-mark); stroke: var(--paper); stroke-width: 2; }
+.dotHollow { fill: var(--paper); stroke: var(--chart-mark); stroke-width: 2; }
+.dotFilled[data-active], .dotHollow[data-active] { stroke-width: 3; }
+.hit { fill: transparent; cursor: pointer; }
+.hit:focus-visible { outline: none; stroke: var(--ink); stroke-width: 2; }
+.tooltip { position: absolute; z-index: 2; display: grid; gap: 0.1rem; min-width: 11rem; padding: 0.55rem 0.7rem; transform: translate(-50%, calc(-100% - 14px)); border: 1px solid var(--line); border-radius: 8px; background: var(--paper); box-shadow: 0 4px 16px rgb(0 0 0 / 12%); font-size: 0.82rem; pointer-events: none; }
+.tipName { font-weight: 650; }
+.muted { color: var(--muted); }
+.caption { max-width: 46rem; margin-top: 0.5rem; color: var(--muted); font-size: 0.85rem; }

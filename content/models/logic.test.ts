@@ -5,6 +5,7 @@ import { toolLoopDebug } from "../jobs/tool-loop-debug.ts";
 import { allPairs, canonicalCompareHref, compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
 import { getModel, headlineScore, leaderboard } from "./index.ts";
 import { poolFor, rankForJob, rankModels } from "./use-cases.ts";
+import { priceFrontier, valuePoints } from "./value.ts";
 
 test("headline score prefers independent results", () => {
   const score = headlineScore("claude-fable-5-1", "terminal-bench-4");
@@ -79,4 +80,18 @@ test("canonical compare URLs ignore pick order; pairs cover every combination on
   assert.equal(canonicalCompareHref(["gpt-6-sol", "claude-sonnet-5"]), canonicalCompareHref(["claude-sonnet-5", "gpt-6-sol"]));
   const pairs = allPairs(["c", "a", "b"]);
   assert.deepEqual(pairs, [["a", "b"], ["a", "c"], ["b", "c"]]);
+});
+
+test("price frontier keeps only points that beat every cheaper point", () => {
+  const points = valuePoints("frontiercode-1-1");
+  assert.ok(points.length >= 4);
+  const frontier = priceFrontier(points);
+  frontier.slice(1).forEach((point, i) => {
+    assert.ok(point.cost >= frontier[i].cost);
+    assert.ok(point.score.value > frontier[i].score.value);
+  });
+  for (const point of points) {
+    const dominated = !frontier.includes(point);
+    if (dominated) assert.ok(frontier.some((f) => f.cost <= point.cost && f.score.value >= point.score.value), point.model.id);
+  }
 });
