@@ -39,7 +39,7 @@ export const tools = [
   {
     name: "compare_models",
     title: "Compare models side by side",
-    description: "Side-by-side prices, limits, licenses, and every sourced benchmark score for 2–4 models, plus the comparison page URL.",
+    description: "Side-by-side prices, limits, licenses, and every sourced benchmark score for 2–4 models, plus which of them to pick for each coding job (byJob) and the comparison page URL.",
     inputSchema: {
       type: "object",
       properties: { models: { type: "array", items: { type: "string", enum: modelIds() }, minItems: 2, maxItems: MAX_COMPARE, description: "Model ids." } },

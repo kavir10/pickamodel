@@ -6,6 +6,8 @@ import { benchmarks, dataAsOf, formatPrice, formatTokens, headlineScore, models 
 import { allPairs, canonicalCompareHref, compareHref, MAX_COMPARE, parseCompareSlug, workloadCost } from "@/content/models/compare";
 import { presets } from "@/content/models/presets";
 import { reportHref } from "@/content/models/report";
+import { verdictsForComparison } from "@/content/models/use-cases";
+import { jobs } from "@/content/jobs";
 import { AddModel, HighlightBest, RemoveModel } from "../compare-controls";
 import styles from "../compare.module.css";
 
@@ -115,6 +117,7 @@ export default async function ComparePage({ params }: ComparePageProps) {
     },
   ];
 
+  const verdicts = verdictsForComparison(jobs, models);
   const addable = allModels.filter((model) => !ids.includes(model.id)).map((model) => ({ id: model.id, name: model.name, provider: model.provider }));
   const priced = models.filter((m) => workloadCost(m) !== null);
   const lowestCost = Math.min(...priced.map((m) => workloadCost(m) as number));
@@ -133,6 +136,47 @@ export default async function ComparePage({ params }: ComparePageProps) {
       <div className={styles.controls}>
         {models.length < MAX_COMPARE && <AddModel current={ids} options={addable} />}
       </div>
+      <section className={styles.verdicts} aria-labelledby="verdicts-heading">
+        <h2 id="verdicts-heading">which to pick, by job</h2>
+        <p className={styles.verdictNote}>For each job, the model that ranks first on the benchmark closest to it. Gaps under 2 points are within run-to-run noise, so near-ties go to the cheaper model.</p>
+        <div className="table-wrap">
+          <table className={styles.verdictTable}>
+            <thead><tr><th scope="col">job</th><th scope="col">pick</th><th scope="col">why</th></tr></thead>
+            <tbody>
+              {verdicts.map(({ job, benchmark, ranked, winner, contenders, cheaperPick, vendorOnly }) => (
+                <tr key={job.slug}>
+                  <th scope="row"><Link href={`/for/${job.slug}`}>{job.title}</Link></th>
+                  <td>
+                    {!winner ? (
+                      <span className={styles.missing}>no shared score</span>
+                    ) : cheaperPick ? (
+                      <>
+                        <strong>{cheaperPick.model.name}</strong>
+                        <span className={styles.sub}>tied with {contenders.filter((c) => c !== cheaperPick).map((c) => c.model.name).join(", ")}; costs less</span>
+                      </>
+                    ) : contenders.length > 1 ? (
+                      <>
+                        <strong>too close to call</strong>
+                        <span className={styles.sub}>{contenders.map((c) => c.model.name).join(" or ")}, same price</span>
+                      </>
+                    ) : (
+                      <>
+                        <strong>{winner.model.name}</strong>
+                        <span className={styles.sub}>{vendorOnly ? "vendor-reported lead" : "clear lead"}</span>
+                      </>
+                    )}
+                  </td>
+                  <td className={styles.why}>
+                    {winner && benchmark
+                      ? `${ranked.filter((r) => r.score).map((r) => `${r.model.name} ${r.score!.value.toFixed(1)}%`).join(" · ")} on ${benchmark.name}`
+                      : "These models have no benchmark in common for this job yet."}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
       <HighlightBest>
         <div className={styles.tableWrap}>
           <table className={styles.table}>
