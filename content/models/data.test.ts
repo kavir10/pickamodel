@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { benchmarks } from "./benchmarks.ts";
 import { models } from "./models.ts";
+import { presets } from "./presets.ts";
 import { scores } from "./scores.ts";
 
 const isoDate = /^\d{4}-\d{2}-\d{2}$/;
@@ -44,4 +45,13 @@ test("every score points at a known model and benchmark, with a source", () => {
 test("no duplicate score rows", () => {
   const keys = scores.map((s) => `${s.model}|${s.benchmark}|${s.reportedBy}|${s.source}`);
   assert.equal(new Set(keys).size, keys.length);
+});
+
+test("compare presets use 2–4 distinct known models", () => {
+  const modelIds = new Set(models.map((m) => m.id));
+  for (const preset of presets) {
+    assert.ok(preset.models.length >= 2 && preset.models.length <= 4, preset.title);
+    assert.equal(new Set(preset.models).size, preset.models.length, preset.title);
+    for (const id of preset.models) assert.ok(modelIds.has(id), `${preset.title}: ${id}`);
+  }
 });
