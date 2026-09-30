@@ -139,7 +139,7 @@ export default async function ComparePage({ params }: ComparePageProps) {
                 <td />
                 {models.map((model) => (
                   <th key={model.id} scope="col">
-                    <span className={styles.modelName}>{model.name}</span>
+                    <Link className={styles.modelName} href={`/models/${model.id}`}>{model.name}</Link>
                     <span className={styles.sub}>{model.provider}</span>
                     {models.length > 2 && <RemoveModel current={ids} id={model.id} name={model.name} />}
                   </th>
