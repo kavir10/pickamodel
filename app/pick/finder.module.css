@@ -1,0 +1,33 @@
+.finder { display: grid; grid-template-columns: minmax(0, 19rem) minmax(0, 1fr); gap: 2.5rem; align-items: start; }
+.controls { display: grid; gap: 1.1rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 10px; }
+.field { display: grid; gap: 0.4rem; margin: 0; padding: 0; border: 0; }
+.field > span, .field legend { padding: 0; color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.field select { padding: 0.5rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip input, .check input { accent-color: var(--ink); }
+.chip input { position: absolute; opacity: 0; pointer-events: none; }
+.chip span { display: inline-block; padding: 0.35rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; cursor: pointer; font-size: 0.88rem; }
+.chip input:checked + span { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.chip input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.check { display: flex; gap: 0.5rem; align-items: center; cursor: pointer; }
+.finder .results { margin-top: 0; }
+.results h2 { margin-bottom: 0.6rem; }
+.editorial { max-width: 40rem; margin: 0 0 1rem; }
+.rankedBy { max-width: 40rem; margin: 0 0 0.75rem; color: var(--muted); font-size: 0.85rem; }
+.empty { color: var(--muted); }
+.list { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.item { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr) minmax(9rem, 14rem); gap: 0.75rem; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid var(--line); }
+.rank { color: var(--muted); font-variant-numeric: tabular-nums; }
+.who { display: grid; gap: 0.15rem; }
+.name { font-weight: 650; }
+.meta { color: var(--muted); font-size: 0.8rem; }
+.score { display: flex; gap: 0.5rem; align-items: center; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.track { flex: 1; height: 0.45rem; background: var(--line); }
+.bar { display: block; height: 100%; background: var(--accent); }
+.bar[data-reported="vendor"] { background: repeating-linear-gradient(135deg, var(--accent) 0 4px, color-mix(in srgb, var(--accent) 55%, var(--paper)) 4px 7px); }
+.compare { display: inline-block; margin-top: 1rem; }
+@media (max-width: 52rem) {
+  .finder { grid-template-columns: 1fr; gap: 1.5rem; }
+  .item { grid-template-columns: 1.5rem minmax(0, 1fr); }
+  .score { grid-column: 2; }
+}
