@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { refactorPr } from "../jobs/refactor-pr.ts";
 import { toolLoopDebug } from "../jobs/tool-loop-debug.ts";
-import { compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
+import { allPairs, canonicalCompareHref, compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
 import { getModel, headlineScore, leaderboard } from "./index.ts";
 import { poolFor, rankForJob, rankModels } from "./use-cases.ts";
 
@@ -73,4 +73,10 @@ test("independent results outrank vendor self-runs on the same benchmark", () =>
   const firstVendor = ranked.findIndex((r) => r.score?.reportedBy === "vendor");
   const lastIndependent = ranked.map((r) => r.score?.reportedBy).lastIndexOf("independent");
   assert.ok(firstVendor === -1 || firstVendor > lastIndependent);
+});
+
+test("canonical compare URLs ignore pick order; pairs cover every combination once", () => {
+  assert.equal(canonicalCompareHref(["gpt-6-sol", "claude-sonnet-5"]), canonicalCompareHref(["claude-sonnet-5", "gpt-6-sol"]));
+  const pairs = allPairs(["c", "a", "b"]);
+  assert.deepEqual(pairs, [["a", "b"], ["a", "c"], ["b", "c"]]);
 });

@@ -3,18 +3,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { benchmarks, dataAsOf, formatPrice, formatTokens, headlineScore, models as allModels, type Model } from "@/content/models";
-import { compareHref, MAX_COMPARE, parseCompareSlug, workloadCost } from "@/content/models/compare";
+import { allPairs, canonicalCompareHref, compareHref, MAX_COMPARE, parseCompareSlug, workloadCost } from "@/content/models/compare";
 import { presets } from "@/content/models/presets";
 import { AddModel, HighlightBest, RemoveModel } from "../compare-controls";
 import styles from "../compare.module.css";
 
 type ComparePageProps = { params: Promise<{ models: string }> };
 
-// Presets are prebuilt; any other valid combination renders on first request and is then cached.
+// Presets and every two-model pair are prebuilt; other combinations render on first request and are then cached.
 export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return presets.map((preset) => ({ models: compareHref(preset.models).replace("/compare/", "") }));
+  const slugs = [...presets.map((preset) => preset.models), ...allPairs(allModels.map((model) => model.id))].map((ids) => compareHref(ids).replace("/compare/", ""));
+  return [...new Set(slugs)].map((models) => ({ models }));
 }
 
 const names = (models: Model[]) => models.map((model) => model.name).join(" vs ");
@@ -23,9 +24,9 @@ export async function generateMetadata({ params }: ComparePageProps): Promise<Me
   const models = parseCompareSlug((await params).models);
   if (!models) return { title: "comparison not found" };
   return {
-    title: names(models),
+    title: `${names(models)} for coding`,
     description: `${names(models)} for coding agents: list price, context window, and every sourced coding benchmark side by side.`,
-    alternates: { canonical: compareHref(models.map((model) => model.id)) },
+    alternates: { canonical: canonicalCompareHref(models.map((model) => model.id)) },
   };
 }
 

@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { jobs } from "@/content/jobs";
 import { dataAsOf, models } from "@/content/models";
-import { compareHref } from "@/content/models/compare";
+import { allPairs, canonicalCompareHref } from "@/content/models/compare";
 import { presets } from "@/content/models/presets";
 
 const baseUrl = "https://pickamodel.dev";
@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/agents`, lastModified: dataAsOf, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/models`, lastModified: dataAsOf, changeFrequency: "weekly", priority: 0.7 },
     ...models.map((model) => ({ url: `${baseUrl}/models/${model.id}`, lastModified: dataAsOf, changeFrequency: "weekly" as const, priority: 0.6 })),
-    ...presets.map((preset) => ({ url: `${baseUrl}${compareHref(preset.models)}`, lastModified: dataAsOf, changeFrequency: "weekly" as const, priority: 0.6 })),
+    ...presets.map((preset) => ({ url: `${baseUrl}${canonicalCompareHref(preset.models)}`, lastModified: dataAsOf, changeFrequency: "weekly" as const, priority: 0.6 })),
+    ...allPairs(models.map((model) => model.id)).map((pair) => ({ url: `${baseUrl}${canonicalCompareHref(pair)}`, lastModified: dataAsOf, changeFrequency: "weekly" as const, priority: 0.5 })),
   ];
 }
