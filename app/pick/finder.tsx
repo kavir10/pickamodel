@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
 import { getJob, jobs } from "@/content/jobs";
 import { formatPrice, formatTokens } from "@/content/models";
 import { compareHref } from "@/content/models/compare";
+import { readQuestion } from "@/content/models/ask";
 import { poolFor, rankModels, type Pool } from "@/content/models/use-cases";
 import styles from "./finder.module.css";
 
-export type FinderState = { job: string; pool: Pool | "any"; maxPrice: number | null; minContext: number | null; openWeights: boolean };
+export type FinderState = { job: string; pool: Pool | "any"; maxPrice: number | null; minContext: number | null; openWeights: boolean; question?: string };
 
 export const defaultState: FinderState = { job: "refactor-pr", pool: "any", maxPrice: null, minContext: null, openWeights: false };
 
@@ -30,6 +32,7 @@ function fromParams(params: URLSearchParams): FinderState {
     maxPrice: number("maxInputPrice"),
     minContext: number("minContext"),
     openWeights: params.get("openWeightsOnly") === "true",
+    question: params.get("q") ?? undefined,
   };
 }
 
@@ -39,6 +42,7 @@ function toQuery(state: FinderState): string {
   if (state.maxPrice !== null) params.set("maxInputPrice", String(state.maxPrice));
   if (state.minContext !== null) params.set("minContext", String(state.minContext));
   if (state.openWeights) params.set("openWeightsOnly", "true");
+  if (state.question) params.set("q", state.question);
   return params.toString();
 }
 
@@ -50,7 +54,8 @@ export function Finder() {
 }
 
 export function FinderView({ state, onChange }: { state: FinderState; onChange?: (next: FinderState) => void }) {
-  const set = (patch: Partial<FinderState>) => onChange?.({ ...state, ...patch });
+  // Editing a control means the question no longer describes the view, so drop it.
+  const set = (patch: Partial<FinderState>) => onChange?.({ ...state, ...patch, question: undefined });
   const job = getJob(state.job) ?? jobs[0];
   const pool = state.pool === "any" ? undefined : state.pool;
   const { benchmark, ranked } = rankModels(job.slug, { pool, maxInputPrice: state.maxPrice ?? undefined, minContext: state.minContext ?? undefined, openWeightsOnly: state.openWeights }, 5);
@@ -58,8 +63,33 @@ export function FinderView({ state, onChange }: { state: FinderState; onChange?:
   const unfiltered = state.maxPrice === null && state.minContext === null && !state.openWeights;
   const editorial = pool ? job.recommendations.find((rec) => poolFor(rec) === pool) : unfiltered ? job.recommendations[0] : undefined;
 
+  const reading = state.question ? readQuestion(state.question, jobs.map((j) => j.slug)) : undefined;
+
   return (
     <div className={styles.finder}>
+      <Ask
+        question={state.question}
+        onAsk={(question) => {
+          const read = readQuestion(question, jobs.map((j) => j.slug));
+          onChange?.({
+            job: read.job ?? state.job,
+            pool: read.pool ?? "any",
+            maxPrice: read.maxInputPrice ?? null,
+            minContext: read.minContext ?? null,
+            openWeights: read.openWeightsOnly ?? false,
+            question,
+          });
+        }}
+      />
+      {reading && (
+        <p className={styles.reading}>
+          {reading.job ? (
+            <>Read as <strong>{job.title}</strong>{reading.understood.length > 0 && <>, {reading.understood.join(", ")}</>}. Adjust anything below.</>
+          ) : (
+            <>Couldn’t tell which job that is, so this shows <strong>{job.title}</strong>{reading.understood.length > 0 && <> ({reading.understood.join(", ")})</>}. Pick the right job below.</>
+          )}
+        </p>
+      )}
       <form className={styles.controls} onSubmit={(event) => event.preventDefault()}>
         <label className={styles.field}>
           <span>job</span>
@@ -139,5 +169,24 @@ export function FinderView({ state, onChange }: { state: FinderState; onChange?:
         )}
       </section>
     </div>
+  );
+}
+
+function Ask({ question, onAsk }: { question?: string; onAsk: (question: string) => void }) {
+  const [draft, setDraft] = useState(question ?? "");
+  return (
+    <form
+      className={styles.ask}
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (draft.trim()) onAsk(draft.trim());
+      }}
+    >
+      <label htmlFor="ask-input">ask in plain words</label>
+      <div className={styles.askRow}>
+        <input id="ask-input" type="text" value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="cheapest model to fix a failing CI build that runs locally" />
+        <button type="submit">ask</button>
+      </div>
+    </form>
   );
 }

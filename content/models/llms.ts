@@ -27,11 +27,12 @@ ${presets.map((preset) => `- [${preset.title}](${siteUrl}${compareHref(preset.mo
 
 ## Machine-readable
 
-- [MCP server](${siteUrl}/mcp): Streamable HTTP, no auth. Tools: recommend_model, compare_models, get_model, get_job, list_jobs, benchmark_leaderboard
+- [MCP server](${siteUrl}/mcp): Streamable HTTP, no auth. Tools: ask, recommend_model, compare_models, get_model, get_job, list_jobs, benchmark_leaderboard
 - [API index](${siteUrl}/api): lists every endpoint
 - [Models JSON](${siteUrl}/api/models.json): prices, limits, licenses, every score with source
 - [Jobs JSON](${siteUrl}/api/jobs.json): each job's recommendations and the current models behind them
 - [Benchmarks JSON](${siteUrl}/api/benchmarks.json): descriptions, caveats, leaderboards
+- [Ask](${siteUrl}/api/ask?q=cheapest%20model%20to%20fix%20a%20failing%20CI%20build): a plain-language question in, how it was read and ranked models out
 - [Recommend](${siteUrl}/api/recommend?job=refactor-pr&pool=fast): ranked models for a job under constraints (pool, maxInputPrice, minContext, openWeightsOnly)
 - [Agent docs](${siteUrl}/agents): API reference and MCP setup
 

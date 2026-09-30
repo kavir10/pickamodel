@@ -3,6 +3,7 @@ import type { Job } from "../jobs/types";
 import { compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
 import { benchmarks, dataAsOf, headlineScore, leaderboard, models, scores } from "./index.ts";
 import type { Model } from "./types";
+import { readQuestion } from "./ask.ts";
 import { poolFor, rankForJob, rankModels, verdictsForComparison, type Constraints, type Pool } from "./use-cases.ts";
 
 /** Shapes shared by the JSON API, llms-full.txt, and the MCP server. Plain data, absolute URLs. */
@@ -115,6 +116,23 @@ export function recommendData({ job: slug, limit = 5, ...constraints }: Recommen
   };
 }
 
+/** Answer a plain-language question: how it was read, then the ranked recommendation. */
+export function askData(question: string) {
+  const reading = readQuestion(question, jobs.map((job) => job.slug));
+  const { job, understood, ...constraints } = reading;
+  const answerUrl = `${siteUrl}/pick?${new URLSearchParams({ q: question }).toString()}`;
+  if (!job) {
+    return {
+      question,
+      reading: { job: null, understood },
+      error: "Couldn't tell which coding job this is. Rephrase with the task, or call /api/recommend with one of these job slugs.",
+      jobs: jobs.map((j) => ({ slug: j.slug, title: j.title })),
+      answerUrl,
+    };
+  }
+  return { question, reading: { job, understood }, answerUrl, ...recommendData({ job, ...constraints }) };
+}
+
 export function parsePool(value: string | null | undefined): Pool | undefined {
   return value === "frontier" || value === "fast" || value === "local" ? value : undefined;
 }
@@ -128,6 +146,7 @@ export const apiIndex = {
     benchmarks: `${siteUrl}/api/benchmarks.json`,
     jobs: `${siteUrl}/api/jobs.json`,
     compare: `${siteUrl}/api/compare/{modelA}-vs-{modelB}[-vs-{modelC}[-vs-{modelD}]]`,
+    ask: `${siteUrl}/api/ask?q={plain-language question}`,
     recommend: `${siteUrl}/api/recommend?job={slug}&pool={frontier|fast|local}&maxInputPrice={usd}&minContext={tokens}&openWeightsOnly={true|false}&limit={1-10}`,
     mcp: `${siteUrl}/mcp`,
     llmsTxt: `${siteUrl}/llms.txt`,
