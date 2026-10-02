@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pickamodel.dev"),
+  metadataBase: new URL("https://www.pickamodel.dev"),
   title: { default: "pickamodel.dev", template: "%s · pickamodel.dev" },
   description: "Pick the model for the coding job — not the hype thread.",
 };

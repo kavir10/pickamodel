@@ -11,7 +11,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: JobPageProps): Promise<Metadata> {
   const job = getJob((await params).slug);
-  return job ? { title: job.title, description: job.oneLiner } : { title: "page not found" };
+  return job
+    ? {
+        title: job.title,
+        description: job.oneLiner,
+        alternates: { canonical: `/for/${job.slug}` },
+      }
+    : { title: "page not found" };
 }
 
 export default async function JobPage({ params }: JobPageProps) {
