@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "pickamodel.dev" }],
+      "destination": "https://www.pickamodel.dev/",
+      "statusCode": 301
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "pickamodel.dev" }],
       "destination": "https://www.pickamodel.dev/:path*",
