@@ -1,5 +1,6 @@
 import { codebaseOnboarding } from "./codebase-onboarding";
 import { dependencyUpgrade } from "./dependency-upgrade";
+import { failingCi } from "./failing-ci";
 import { greenfieldScaffold } from "./greenfield-scaffold";
 import { localVsApi } from "./local-vs-api";
 import { prReview } from "./pr-review";
@@ -9,7 +10,7 @@ import { toolLoopDebug } from "./tool-loop-debug";
 import { uiFromDesign } from "./ui-from-design";
 import type { Job } from "./types";
 
-export const jobs = [codebaseOnboarding, dependencyUpgrade, greenfieldScaffold, localVsApi, prReview, refactorPr, testGeneration, toolLoopDebug, uiFromDesign] satisfies Job[];
+export const jobs = [codebaseOnboarding, dependencyUpgrade, failingCi, greenfieldScaffold, localVsApi, prReview, refactorPr, testGeneration, toolLoopDebug, uiFromDesign] satisfies Job[];
 
 export function getJob(slug: string): Job | undefined {
   return jobs.find((job) => job.slug === slug);
