@@ -1,3 +1,4 @@
+import { codebaseOnboarding } from "./codebase-onboarding";
 import { greenfieldScaffold } from "./greenfield-scaffold";
 import { localVsApi } from "./local-vs-api";
 import { prReview } from "./pr-review";
@@ -6,7 +7,7 @@ import { testGeneration } from "./test-generation";
 import { toolLoopDebug } from "./tool-loop-debug";
 import type { Job } from "./types";
 
-export const jobs = [greenfieldScaffold, localVsApi, prReview, refactorPr, testGeneration, toolLoopDebug] satisfies Job[];
+export const jobs = [codebaseOnboarding, greenfieldScaffold, localVsApi, prReview, refactorPr, testGeneration, toolLoopDebug] satisfies Job[];
 
 export function getJob(slug: string): Job | undefined {
   return jobs.find((job) => job.slug === slug);
