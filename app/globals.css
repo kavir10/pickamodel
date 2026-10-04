@@ -1,7 +1,10 @@
-:root { color-scheme: light; --ink: #181816; --muted: #69675f; --line: #d9d7cf; --paper: #f7f6f1; --accent: #315c45; }
+:root { color-scheme: light dark; --ink: #181816; --muted: #69675f; --line: #d9d7cf; --paper: #f7f6f1; --accent: #315c45; }
+@media (prefers-color-scheme: dark) {
+  :root { --ink: #ecebe4; --muted: #a3a197; --line: #34332e; --paper: #141412; --accent: #86c29f; }
+}
 * { box-sizing: border-box; }
 html { background: var(--paper); }
-body { margin: 0; color: var(--ink); font-family: Arial, Helvetica, sans-serif; line-height: 1.55; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: Arial, Helvetica, sans-serif; line-height: 1.55; }
 a { color: var(--accent); text-underline-offset: 0.2em; }
 a:hover { text-decoration-thickness: 2px; }
 .shell { width: min(100% - 2rem, 68rem); margin-inline: auto; padding-block: 5rem; }
