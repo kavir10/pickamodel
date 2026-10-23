@@ -1,0 +1,47 @@
+.page { max-width: 68rem; }
+.header { margin-bottom: 2.5rem; }
+.title { max-width: none; font-size: clamp(2.1rem, 6vw, 4rem); }
+.crumbs { margin-bottom: 2rem; color: var(--muted); font-size: 0.9rem; }
+.sub { display: block; color: var(--muted); font-size: 0.78rem; font-weight: 400; }
+.hint { display: block; max-width: 16rem; color: var(--muted); font-size: 0.72rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.missing { color: var(--muted); }
+.note { font-size: 0.8rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin-bottom: 0.75rem; }
+.toggle { display: inline-flex; gap: 0.5rem; align-items: center; margin-bottom: 0.75rem; cursor: pointer; font-size: 0.94rem; }
+.toggle input { width: 1rem; height: 1rem; accent-color: var(--ink); }
+.add { display: inline-flex; gap: 0.5rem; align-items: center; font-size: 0.94rem; }
+.add select, .slot select { padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--ink); font: inherit; }
+.tableWrap { overflow-x: auto; border-top: 2px solid var(--ink); }
+.table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+.table th, .table td { min-width: 9rem; padding: 0.75rem 1rem 0.75rem 0.6rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.table thead th { position: relative; padding-right: 2rem; color: var(--ink); font-size: inherit; letter-spacing: 0; text-transform: none; }
+.table tbody th[scope="row"] { padding-left: 0; position: sticky; left: 0; z-index: 1; width: 13rem; background: var(--paper); color: var(--muted); font-size: 0.82rem; font-weight: 600; }
+.modelName { display: block; font-size: 1.05rem; font-weight: 700; }
+.sectionRow th { padding-top: 2rem; padding-left: 0; color: var(--ink); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.remove { position: absolute; top: 0.6rem; right: 0.75rem; width: 1.6rem; height: 1.6rem; border: 1px solid var(--line); border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; }
+.remove:hover { border-color: var(--ink); color: var(--ink); }
+.score { display: grid; gap: 0.3rem; }
+.scoreValue { font-variant-numeric: tabular-nums; font-weight: 650; }
+.track { width: 100%; max-width: 10rem; height: 0.45rem; background: var(--line); }
+.bar { display: block; height: 100%; background: var(--accent); }
+.bar[data-reported="vendor"] { background: repeating-linear-gradient(135deg, var(--accent) 0 4px, color-mix(in srgb, var(--accent) 55%, var(--paper)) 4px 7px); }
+.highlight td[data-best] { background: color-mix(in srgb, var(--accent) 12%, transparent); box-shadow: inset 3px 0 0 var(--accent); }
+.summary { max-width: 46rem; margin-top: 3.5rem; }
+.summary h2 { font-size: 1.2rem; }
+.summary p { margin: 0 0 0.75rem; }
+.slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) auto; gap: 1rem; align-items: end; padding: 1.25rem; border: 1px dashed var(--line); border-radius: 10px; }
+.slot { display: grid; gap: 0.35rem; color: var(--muted); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.slot select { letter-spacing: 0; text-transform: none; font-weight: 400; font-size: 1rem; }
+.go { padding: 0.55rem 1.2rem; border: 0; border-radius: 6px; background: var(--ink); color: var(--paper); cursor: pointer; font: inherit; }
+.go:disabled { opacity: 0.35; cursor: not-allowed; }
+.presets { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1rem; margin: 2rem 0 0; padding: 0; list-style: none; }
+.preset { display: grid; gap: 0.35rem; height: 100%; padding: 1.1rem; border: 1px solid var(--line); border-radius: 10px; color: inherit; text-decoration: none; }
+.preset:hover { border-color: var(--ink); }
+.presetTitle { font-weight: 700; }
+.presetModels { margin-top: 0.5rem; padding-top: 0.6rem; border-top: 1px solid var(--line); color: var(--accent); font-size: 0.88rem; }
+@media (max-width: 42rem) {
+  .slots { grid-template-columns: 1fr; }
+  .table th, .table td { min-width: 7rem; padding-right: 0.6rem; font-size: 0.86rem; }
+  .table tbody th[scope="row"] { width: 6.5rem; min-width: 6.5rem; }
+  .hint { display: none; }
+}
