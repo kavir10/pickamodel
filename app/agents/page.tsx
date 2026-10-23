@@ -3,6 +3,7 @@ import Link from "next/link";
 import { jobs } from "@/content/jobs";
 import { dataAsOf } from "@/content/models";
 import { recommendData, siteUrl } from "@/content/models/api";
+import { tools } from "@/content/models/mcp";
 import styles from "./agents.module.css";
 
 export const metadata: Metadata = {
@@ -32,7 +33,8 @@ const params = [
 ];
 
 const agentsMdSnippet = `## Choosing a model
-Before picking a model for a coding task, fetch
+Before picking a model for a coding task, call the pickamodel MCP tool
+recommend_model, or fetch
 ${siteUrl}/api/recommend?job=<job>&pool=<frontier|fast|local>
 Job slugs are listed at ${siteUrl}/api/jobs.json.
 Prefer independent scores over vendor-reported ones.`;
@@ -43,8 +45,20 @@ export default function AgentsPage() {
     <main className="shell job-page">
       <header className="job-header">
         <h1>for agents</h1>
-        <p className="lede">Everything on the site is also plain text and JSON. No API key. Responses allow any origin, and scores keep their source link and a vendor/independent label so an agent can cite them.</p>
+        <p className="lede">Everything on the site is also available as an MCP server, plain text, and JSON. No API key. Responses allow any origin, and scores keep their source link and a vendor/independent label so an agent can cite them.</p>
       </header>
+
+      <section aria-labelledby="mcp-heading">
+        <h2 id="mcp-heading">mcp server</h2>
+        <p className={styles.note}>Connect any MCP client to <code>{siteUrl}/mcp</code> (Streamable HTTP, no auth). The tools are read-only and return the same data as the JSON API.</p>
+        <h3 className={styles.sub}>Claude Code</h3>
+        <pre className={styles.code}><code>{`claude mcp add --transport http pickamodel ${siteUrl}/mcp`}</code></pre>
+        <h3 className={styles.sub}>Cursor, Windsurf, and other clients (mcp.json)</h3>
+        <pre className={styles.code}><code>{JSON.stringify({ mcpServers: { pickamodel: { url: `${siteUrl}/mcp` } } }, null, 2)}</code></pre>
+        <dl className={styles.params}>
+          {tools.map((tool) => <div key={tool.name}><dt><code>{tool.name}</code></dt><dd>{tool.description}</dd></div>)}
+        </dl>
+      </section>
 
       <section aria-labelledby="endpoints-heading">
         <h2 id="endpoints-heading">endpoints</h2>
