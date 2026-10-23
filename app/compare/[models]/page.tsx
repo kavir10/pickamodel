@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { benchmarks, dataAsOf, formatPrice, formatTokens, headlineScore, models as allModels, type Model } from "@/content/models";
 import { allPairs, canonicalCompareHref, compareHref, MAX_COMPARE, parseCompareSlug, workloadCost } from "@/content/models/compare";
 import { presets } from "@/content/models/presets";
+import { reportHref } from "@/content/models/report";
 import { AddModel, HighlightBest, RemoveModel } from "../compare-controls";
 import styles from "../compare.module.css";
 
@@ -186,7 +187,7 @@ export default async function ComparePage({ params }: ComparePageProps) {
         )}
       </section>
       <footer>
-        <p>data checked <time dateTime={dataAsOf}>{dataAsOf}</time><span aria-hidden="true"> · </span><Link href="/benchmarks">all benchmarks</Link></p>
+        <p>data checked <time dateTime={dataAsOf}>{dataAsOf}</time><span aria-hidden="true"> · </span><Link href="/benchmarks">all benchmarks</Link><span aria-hidden="true"> · </span><a href={reportHref(names(models), [`Page: https://pickamodel.dev${compareHref(ids)}`, `Data checked: ${dataAsOf}`])}>report a wrong number</a></p>
         <p className="fine-print">Prices are the vendor’s list price in USD. Scores come from vendor launch posts, model cards, and independent leaderboards. Settings differ between sources, so treat small gaps as noise.</p>
       </footer>
     </main>

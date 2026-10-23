@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { benchmarks, dataAsOf, formatPrice, formatTokens, getModel, models, scores } from "@/content/models";
 import { jobs } from "@/content/jobs";
 import { compareHref } from "@/content/models/compare";
+import { reportHref } from "@/content/models/report";
 import { jobsForModel } from "@/content/models/use-cases";
 import styles from "../models.module.css";
 
@@ -108,7 +109,7 @@ export default async function ModelPage({ params }: ModelPageProps) {
         </section>
       )}
       <footer>
-        <p>data checked <time dateTime={dataAsOf}>{dataAsOf}</time><span aria-hidden="true"> · </span><Link href="/benchmarks">all benchmarks</Link></p>
+        <p>data checked <time dateTime={dataAsOf}>{dataAsOf}</time><span aria-hidden="true"> · </span><Link href="/benchmarks">all benchmarks</Link><span aria-hidden="true"> · </span><a href={reportHref(model.name, [`Page: https://pickamodel.dev/models/${model.id}`, `Data checked: ${dataAsOf}`])}>report a wrong number</a></p>
       </footer>
     </main>
   );
