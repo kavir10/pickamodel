@@ -5,6 +5,7 @@ const links = [
   { href: "/compare", label: "compare" },
   { href: "/benchmarks", label: "benchmarks" },
   { href: "/models", label: "models" },
+  { href: "/agents", label: "for agents" },
 ];
 
 export function SiteHeader() {

@@ -28,29 +28,45 @@ export function poolFor(rec: Recommendation): Pool {
   return "frontier";
 }
 
-function candidates(pool: Pool): Model[] {
-  if (pool === "local") return models.filter((model) => model.runsLocally);
-  return models.filter((model) => model.class === pool);
-}
-
 export type RankedModel = { model: Model; score?: Score };
 export type PoolRanking = { pool: Pool; benchmark?: Benchmark; ranked: RankedModel[] };
 
+/** Constraints an agent or the finder can put on the candidate set. */
+export type Constraints = { pool?: Pool; maxInputPrice?: number; minContext?: number; openWeightsOnly?: boolean };
+
+export function matches(model: Model, { pool, maxInputPrice, minContext, openWeightsOnly }: Constraints): boolean {
+  if (pool === "local" && !model.runsLocally) return false;
+  if ((pool === "frontier" || pool === "fast") && model.class !== pool) return false;
+  if (maxInputPrice !== undefined && (!model.price || model.price.input > maxInputPrice)) return false;
+  if (minContext !== undefined && model.contextWindow < minContext) return false;
+  if (openWeightsOnly && !model.openWeight) return false;
+  return true;
+}
+
 /**
- * Current models for one recommendation, ranked by the first of the job's benchmarks that scores at
- * least two models in the pool. Ranking only within one benchmark keeps the comparison honest.
+ * Rank the models that pass `constraints` for a job, using the first of the job's benchmarks that
+ * scores at least two of them. Ranking within one benchmark keeps the comparison honest; independent
+ * results outrank vendor-reported ones when there are enough of them to compare.
  */
-export function rankForJob(job: Job, rec: Recommendation, limit = 3): PoolRanking {
-  const pool = poolFor(rec);
-  const pickFrom = candidates(pool);
-  const order = [...(jobBenchmarks[job.slug] ?? defaultBenchmarks), ...benchmarks.map((b) => b.id)];
+export function rankModels(jobSlug: string, constraints: Constraints, limit = 3): { benchmark?: Benchmark; ranked: RankedModel[] } {
+  const pickFrom = models.filter((model) => matches(model, constraints));
+  const order = [...(jobBenchmarks[jobSlug] ?? defaultBenchmarks), ...benchmarks.map((b) => b.id)];
   const benchmarkId = order.find((id) => pickFrom.filter((model) => headlineScore(model.id, id)).length >= 2);
   const benchmark = benchmarks.find((b) => b.id === benchmarkId);
-  const ranked = pickFrom
-    .map((model) => ({ model, score: benchmarkId ? headlineScore(model.id, benchmarkId) : undefined }))
-    .sort((a, b) => (b.score?.value ?? -1) - (a.score?.value ?? -1) || b.model.released.localeCompare(a.model.released))
+  const scored = pickFrom.map((model) => ({ model, score: benchmarkId ? headlineScore(model.id, benchmarkId) : undefined }));
+  // Vendor self-runs use their own harness, so when two or more independent results exist they rank first.
+  const independentFirst = scored.filter(({ score }) => score?.reportedBy === "independent").length >= 2;
+  const tier = (score?: Score) => (!score ? 0 : independentFirst && score.reportedBy === "vendor" ? 1 : 2);
+  const ranked = scored
+    .sort((a, b) => tier(b.score) - tier(a.score) || (b.score?.value ?? -1) - (a.score?.value ?? -1) || b.model.released.localeCompare(a.model.released))
     .slice(0, limit);
-  return { pool, benchmark, ranked };
+  return { benchmark, ranked };
+}
+
+/** Current models for one of a job's recommendations. */
+export function rankForJob(job: Job, rec: Recommendation, limit = 3): PoolRanking {
+  const pool = poolFor(rec);
+  return { pool, ...rankModels(job.slug, { pool }, limit) };
 }
 
 /** Jobs where a model makes the top three for at least one recommendation. */
