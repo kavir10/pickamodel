@@ -1,6 +1,6 @@
-import { benchmarks } from "./benchmarks";
-import { models } from "./models";
-import { scores } from "./scores";
+import { benchmarks } from "./benchmarks.ts";
+import { models } from "./models.ts";
+import { scores } from "./scores.ts";
 import type { Benchmark, Model, Score } from "./types";
 
 export { benchmarks, models, scores };

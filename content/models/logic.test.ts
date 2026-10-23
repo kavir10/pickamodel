@@ -1,0 +1,53 @@
+import assert from "node:assert/strict";
+import { test } from "node:test";
+import { refactorPr } from "../jobs/refactor-pr.ts";
+import { toolLoopDebug } from "../jobs/tool-loop-debug.ts";
+import { compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
+import { getModel, headlineScore, leaderboard } from "./index.ts";
+import { poolFor, rankForJob } from "./use-cases.ts";
+
+test("headline score prefers independent results", () => {
+  const score = headlineScore("claude-fable-5-1", "terminal-bench-4");
+  assert.equal(score?.reportedBy, "independent");
+});
+
+test("leaderboard is sorted high to low, one row per model", () => {
+  const rows = leaderboard("frontiercode-1-1");
+  assert.ok(rows.length > 2);
+  assert.equal(new Set(rows.map((r) => r.model.id)).size, rows.length);
+  rows.slice(1).forEach((row, i) => assert.ok(rows[i].score.value >= row.score.value));
+});
+
+test("compare slugs round-trip and reject bad input", () => {
+  const ids = ["claude-sonnet-5", "gpt-6-sol"];
+  assert.deepEqual(parseCompareSlug(compareHref(ids).replace("/compare/", ""))?.map((m) => m.id), ids);
+  assert.equal(parseCompareSlug("claude-sonnet-5"), undefined);
+  assert.equal(parseCompareSlug("claude-sonnet-5-vs-claude-sonnet-5"), undefined);
+  assert.equal(parseCompareSlug("claude-sonnet-5-vs-nope"), undefined);
+  assert.equal(parseCompareSlug(["a", "b", "c", "d", "e"].join("-vs-")), undefined);
+});
+
+test("workload cost uses list price and is null without one", () => {
+  assert.equal(workloadCost(getModel("claude-sonnet-5")!), 30);
+  assert.equal(workloadCost(getModel("gpt-oss-20b")!), null);
+});
+
+test("recommendation labels map to model pools", () => {
+  assert.deepEqual(refactorPr.recommendations.map(poolFor), ["frontier", "fast", "local"]);
+});
+
+test("job rankings use one benchmark and stay inside the pool", () => {
+  for (const job of [refactorPr, toolLoopDebug]) {
+    for (const rec of job.recommendations) {
+      const { pool, benchmark, ranked } = rankForJob(job, rec);
+      assert.ok(ranked.length > 0, `${job.slug} / ${rec.model}`);
+      for (const { model, score } of ranked) {
+        if (pool === "local") assert.ok(model.runsLocally, model.id);
+        else assert.equal(model.class, pool, model.id);
+        if (score) assert.equal(score.benchmark, benchmark?.id);
+      }
+      const values = ranked.map((r) => r.score?.value ?? -1);
+      values.slice(1).forEach((v, i) => assert.ok(values[i] >= v));
+    }
+  }
+});
