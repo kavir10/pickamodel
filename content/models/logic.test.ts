@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { refactorPr } from "../jobs/refactor-pr.ts";
 import { toolLoopDebug } from "../jobs/tool-loop-debug.ts";
-import { allPairs, canonicalCompareHref, compareHref, parseCompareSlug, workloadCost } from "./compare.ts";
+import { allPairs, canonicalCompareHref, compareHref, parseCompareSlug, usageCost, workloadCost } from "./compare.ts";
 import { getModel, headlineScore, leaderboard } from "./index.ts";
 import { CLOSE_CALL, poolFor, rankForJob, rankModels, verdictsForComparison } from "./use-cases.ts";
 import { priceFrontier, valuePoints } from "./value.ts";
@@ -134,4 +134,13 @@ test("plain-language questions map to a job and constraints", () => {
   }
   assert.equal(readQuestion("fix ci", ["refactor-pr"]).job, undefined, "only jobs the site has");
   assert.equal(readQuestion("hello there", all).job, undefined, "no guess when nothing matches");
+});
+
+test("usage cost applies cached-input pricing to the cached share", () => {
+  const sonnet = getModel("claude-sonnet-5")!; // $2 in, $0.20 cached, $10 out
+  assert.equal(usageCost(sonnet, { inputMillions: 10, outputMillions: 1, cachedShare: 0 }), 30);
+  assert.equal(usageCost(sonnet, { inputMillions: 10, outputMillions: 1, cachedShare: 0.5 }), 10 * (0.5 * 2 + 0.5 * 0.2) + 10);
+  const flash = getModel("gemini-3-8-flash")!; // no cached price published: cached share billed at input price
+  assert.equal(usageCost(flash, { inputMillions: 10, outputMillions: 0, cachedShare: 0.9 }), 7.5);
+  assert.equal(usageCost(getModel("gpt-oss-20b")!, { inputMillions: 1, outputMillions: 1, cachedShare: 0 }), null);
 });
