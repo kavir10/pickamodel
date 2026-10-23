@@ -1,6 +1,7 @@
 name: Check data sources
 
-# Weekly: every model, benchmark, and score source URL must still resolve.
+# Weekly: every model, benchmark, and score source URL must still resolve, and the dataset must have
+# been re-checked in the last 30 days (content/models/index.ts dataAsOf). A failure emails the repo owner.
 on:
   schedule:
     - cron: "0 14 * * 1"
