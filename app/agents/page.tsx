@@ -20,6 +20,7 @@ const endpoints = [
   { path: "/api/jobs.json", what: "Every job: editorial recommendations plus the current models behind each one." },
   { path: "/api/benchmarks.json", what: "Every benchmark: description, caveat, and leaderboard." },
   { path: "/api/compare/claude-sonnet-5-vs-gpt-6-sol", what: "Side-by-side data for 2–4 models (ids joined by -vs-)." },
+  { path: "/api/ask?q=cheapest model to fix a failing CI build that runs locally", what: "A plain-language question in; how it was read (job, constraints) and ranked models out." },
   { path: "/api/recommend?job=refactor-pr&pool=fast", what: "Ranked models for a job, filtered by your constraints." },
 ];
 
