@@ -3,6 +3,17 @@ import type { Model } from "./types";
 
 export const MAX_COMPARE = 4;
 
+/** One URL per set of models, whatever order they were picked in. Used for canonical links and the sitemap. */
+export function canonicalCompareHref(ids: string[]): string {
+  return compareHref([...ids].sort());
+}
+
+/** Every two-model comparison, in canonical order. */
+export function allPairs(ids: string[]): string[][] {
+  const sorted = [...ids].sort();
+  return sorted.flatMap((a, i) => sorted.slice(i + 1).map((b) => [a, b]));
+}
+
 export function compareSlug(ids: string[]): string {
   return ids.join("-vs-");
 }
