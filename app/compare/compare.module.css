@@ -45,3 +45,14 @@
   .table tbody th[scope="row"] { width: 6.5rem; min-width: 6.5rem; }
   .hint { display: none; }
 }
+.verdicts { margin: 1.5rem 0 2.5rem; }
+.verdicts h2 { margin-bottom: 0.4rem; font-size: 1.2rem; }
+.verdictNote { max-width: 46rem; margin: 0 0 0.9rem; color: var(--muted); font-size: 0.88rem; }
+.verdictTable th, .verdictTable td { min-width: 0; }
+.verdictTable tbody th { width: 16rem; font-weight: 400; }
+.why { color: var(--muted); font-size: 0.85rem; }
+@media (max-width: 42rem) {
+  .verdictTable thead { display: none; }
+  .verdictTable tr { display: block; padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+  .verdictTable tbody th, .verdictTable td { display: block; width: auto; padding: 0.1rem 0; border: 0; }
+}
