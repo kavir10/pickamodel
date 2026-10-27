@@ -31,3 +31,11 @@ footer { margin-top: 5rem; padding-top: 1.25rem; border-top: 1px solid var(--lin
 footer p { margin: 0; }
 .fine-print { max-width: 46rem; margin-top: 0.65rem; }
 @media (max-width: 42rem) { .shell { padding-block: 3rem; } .job-header { margin-bottom: 3rem; } }
+.change-list { margin: 3.5rem 0 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
+.change-list li { padding: 1.25rem 0; border-bottom: 1px solid var(--line); }
+.change-list h2 { margin: 0.25rem 0 0.35rem; font-size: 1.25rem; }
+.change-list p { margin: 0; }
+.change-meta { color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.site-footer { width: min(100% - 2rem, 68rem); margin: 0 auto; padding: 1.25rem 0 3rem; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.85rem; }
+.site-footer a { margin-right: 1rem; }
+body:has(.hub) .site-footer { width: min(100% - 2rem, 46rem); }
